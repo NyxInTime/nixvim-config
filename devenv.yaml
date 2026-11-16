@@ -1,0 +1,15 @@
+inputs:
+  nixpkgs:
+    url: github:NixOS/nixpkgs/nixos-unstable
+  nixvim:
+    url: github:nix-community/nixvim
+    inputs:
+      nixpkgs:
+        follows: nixpkgs
+
+allowUnfree: true
+
+secretspec:
+  enable: true
+  provider: dotenv
+  cachix_auth_token: true
