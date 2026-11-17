@@ -12,6 +12,7 @@
   imports = [
     ./nixvim/lsp.nix
     ./nixvim/globals.nix
+    ./nixvim/keymaps.nix
   ];
   waylandSupport = true;
   # colorscheme
@@ -138,6 +139,17 @@
 
     };
     neogen.enable = true;
+
+    neotest = {
+      enable = true;
+      adapters.java = {
+        enable = true;
+        settings = {
+          incremental_build = true;
+        };
+      };
+    };
+
   };
   extraPlugins = [
     (pkgs.vimUtils.buildVimPlugin {
