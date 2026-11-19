@@ -7,6 +7,8 @@
 {
   extraPackages = with pkgs; [
     qt6.qtdeclarative
+    dotnetCorePackages.sdk_9_0
+    netcoredbg
   ];
   globals.mapleader = " ";
   imports = [
@@ -32,6 +34,10 @@
             "*.gd.uid$"
             "^target/"
             "^./target/"
+            "^bin/"
+            "^./bin/"
+            "^obj/"
+            "^./obj/"
           ];
         };
         pickers = {
@@ -142,14 +148,45 @@
 
     neotest = {
       enable = true;
-      adapters.java = {
-        enable = true;
-        settings = {
-          incremental_build = true;
+      adapters = {
+        java = {
+          enable = true;
+          settings = {
+            incremental_build = true;
+          };
         };
+        dotnet.enable = true;
       };
     };
 
+    neo-tree.enable = true;
+
+    # Debugging (Breakpoints, Locals, Call Stack)
+    dap = {
+      enable = true;
+      adapters.executables.coreclr = {
+        command = "${pkgs.netcoredbg}/bin/netcoredbg";
+        args = [ "--interpreter=vscode" ];
+      };
+      configurations.cs = [
+        {
+          type = "coreclr";
+          name = "Launch - netcoredbg";
+          request = "launch";
+          program = {
+            __raw = ''
+              function()
+                return vim.fn.input('Path to dll: ', vim.fn.getcwd() .. '/bin/Debug/', 'file')
+              end
+            '';
+          };
+        }
+      ];
+    };
+    dap-ui.enable = true;
+    dap-virtual-text.enable = true;
+
+    todo-comments.enable = true;
   };
   extraPlugins = [
     (pkgs.vimUtils.buildVimPlugin {
@@ -172,6 +209,12 @@
       })
 
       vim.lsp.enable('gdscript')
+
+        local dap, dapui = require("dap"), require("dapui")
+        dap.listeners.before.attach.dapui_config = function() dapui.open() end
+        dap.listeners.before.launch.dapui_config = function() dapui.open() end
+    dap.listeners.before.event_terminated.dapui_config = function() dapui.close() end
+    dap.listeners.before.event_exited.dapui_config = function() dapui.close() end
   '';
 
   diagnostic = {

@@ -101,6 +101,15 @@
         ];
       };
       lua_ls.enable = true;
+
+      csharp_ls.enable = true;
+    };
+    keymaps.lspBuf = {
+      "gd" = "definition";
+      "gr" = "references";
+      "K" = "hover";
+      "<F2>" = "rename";
+      "<C-.>" = "code_action";
     };
   };
 }
