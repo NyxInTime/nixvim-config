@@ -186,7 +186,12 @@
     dap-ui.enable = true;
     dap-virtual-text.enable = true;
 
-    todo-comments.enable = true;
+    todo-comments = {
+      enable = true;
+      settings = {
+        search.pattern = "\\b(KEYWORDS):?";
+      };
+    };
   };
   extraPlugins = [
     (pkgs.vimUtils.buildVimPlugin {
