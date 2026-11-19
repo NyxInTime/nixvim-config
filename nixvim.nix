@@ -200,6 +200,12 @@
           };
         };
 
+        # 2. Buffer highlighting (Vim regex)
+        # Matches "//TODO", "// TODO", "//todo", "// todo" (colon optional)
+        highlight = {
+          pattern = ''//\s*<(KEYWORDS)\s*:?'';
+        };
+
         # 3. Search pickers like :TodoTelescope (Ripgrep regex)
         # Matches "//TODO", "// TODO", "//todo", "// todo" (colon optional)
         search = {
