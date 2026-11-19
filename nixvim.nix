@@ -189,7 +189,28 @@
     todo-comments = {
       enable = true;
       settings = {
-        search.pattern = "\\b(KEYWORDS):?";
+        merge_keywords = true;
+
+        # 1. Match both uppercase and lowercase
+        keywords = {
+          TODO = {
+            icon = " ";
+            color = "info";
+            alt = [ "todo" ];
+          };
+        };
+
+        # 2. Buffer highlighting (Vim regex)
+        # Matches "//TODO", "// TODO", "//todo", "// todo" (colon optional)
+        highlight = {
+          pattern = ''//\s*<(KEYWORDS)\s*:?'';
+        };
+
+        # 3. Search pickers like :TodoTelescope (Ripgrep regex)
+        # Matches "//TODO", "// TODO", "//todo", "// todo" (colon optional)
+        search = {
+          pattern = ''//\s*\b(KEYWORDS)\b:?'';
+        };
       };
     };
   };
