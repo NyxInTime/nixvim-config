@@ -259,4 +259,18 @@
       update_in_insert = false;
     };
   };
+  autoCmd = [
+    {
+      event = "BufWinEnter";
+      callback = {
+        __raw = ''
+          function(args)
+            if vim.bo[args.buf].buftype ~= "" then
+              pcall(require("todo-comments.highlight").stop, args.buf)
+            end
+          end
+        '';
+      };
+    }
+  ];
 }
