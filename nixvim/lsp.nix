@@ -4,7 +4,14 @@
   pkgs,
   ...
 }:
-
+let
+  javaDebugDir = "${pkgs.vscode-extensions.vscjava.vscode-java-debug}/share/vscode/extensions/vscjava.vscode-java-debug/server";
+  javaDebugJar = builtins.head (
+    builtins.filter (f: builtins.match "com\\.microsoft\\.java\\.debug\\.plugin-.*\\.jar" f != null) (
+      builtins.attrNames (builtins.readDir javaDebugDir)
+    )
+  );
+in
 {
   plugins.lsp = {
     enable = true;
@@ -48,7 +55,18 @@
       # CSS language server
       cssls.enable = true;
       # Java language server
-      jdtls.enable = true;
+      jdtls = {
+        enable = true;
+        settings = {
+          init_options = {
+            bundles = [ "${javaDebugDir}/${javaDebugJar}" ];
+          };
+        };
+        onAttach.function = ''
+          require("jdtls").setup_dap({ hotcodereplace = "auto" })
+          require("jdtls.dap").setup_dap_main_class_configs()
+        '';
+      };
       # Julia language server
       # package = null: relies on LanguageServer.jl installed in the Julia environment
       julials = {
@@ -112,4 +130,5 @@
       "<C-.>" = "code_action";
     };
   };
+  extraPlugins = [ pkgs.vimPlugins.nvim-jdtls ];
 }
