@@ -182,6 +182,14 @@
           };
         }
       ];
+      configurations.java = [
+        {
+          type = "java";
+          request = "launch";
+          name = "Launch Java (With Scanner Input)";
+          console = "integratedTerminal"; # Required for Scanner(System.in)
+        }
+      ];
     };
     dap-ui.enable = true;
     dap-virtual-text.enable = true;
