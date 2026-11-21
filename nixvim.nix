@@ -251,18 +251,21 @@
       update_in_insert = false;
     };
   };
-  autoCmd = [
-    {
-      event = "BufWinEnter";
-      callback = {
-        __raw = ''
-          function(args)
-            if vim.bo[args.buf].buftype ~= "" then
-              pcall(require("todo-comments.highlight").stop, args.buf)
-            end
-          end
-        '';
-      };
-    }
-  ];
+  extraConfigLuaPre = ''
+    local orig_set_extmark = vim.api.nvim_buf_set_extmark
+    vim.api.nvim_buf_set_extmark = function(buf, ns_id, line, col, opts)
+      if opts and opts.end_col and vim.api.nvim_buf_is_valid(buf) then
+        local target_line = opts.end_line or line
+        local lines = vim.api.nvim_buf_get_lines(buf, target_line, target_line + 1, false)
+        local max_col = lines[1] and #lines[1] or 0
+        if opts.end_col > max_col then
+          opts = vim.tbl_extend("force", opts, { end_col = max_col })
+        end
+        if col > max_col then
+          col = max_col
+        end
+      end
+      return orig_set_extmark(buf, ns_id, line, col, opts)
+    end
+  '';
 }
